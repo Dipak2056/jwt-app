@@ -7,6 +7,11 @@ function Register() {
     email: "",
     password: "",
   });
+  const generateError = (err) => {
+    return toast.error(err, {
+      position: "bottom-right",
+    });
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -21,6 +26,12 @@ function Register() {
       );
       console.log(data);
       if (data) {
+        if (data.errors) {
+          const { email, password } = data.errors;
+          if (email) generateError(email);
+          else if (password) generateError(password);
+        } else {
+        }
       }
     } catch (error) {
       console.log(error);
