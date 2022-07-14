@@ -1,5 +1,5 @@
 import "dotenv/config";
-import UserModel from "../Models/UserModel";
+import UserModel from "../Models/UserModel.js";
 import jwt from "jsonwebtoken";
 
 export const checkUser = (req, res, next) => {
