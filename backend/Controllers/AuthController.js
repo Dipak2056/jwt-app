@@ -7,6 +7,22 @@ const createToken = (id) => {
     expiresIn: maxAge,
   });
 };
+const handleErrors = (err) => {
+  let errors = {
+    email: "",
+    password: "",
+  };
+  if (err.code === 11000) {
+    errors.email = "Email already registered";
+    return errors;
+  }
+  if (err.message.includes("Users validation failed")) {
+    Object.values(err.errors).forEach(({ properties }) => {
+      errors[properties.path] = properties.message;
+    });
+  }
+  return errors;
+};
 export const register = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -20,7 +36,8 @@ export const register = async (req, res, next) => {
     res.status(201).json({ user: user._id, created: true, token });
   } catch (error) {
     console.log(error);
-    next(error);
+    const errors = handleErrors(error);
+    res.json({ errors, created: false });
   }
 };
 export const login = async (req, res, next) => {};
