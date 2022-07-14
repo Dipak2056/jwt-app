@@ -1,13 +1,43 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 function Login() {
+  const navigate = useNavigate();
   const [values, setValues] = useState({
     email: "",
     password: "",
   });
-  const handleSubmit = (e) => {
-    e.prevendDefault();
+  const generateError = (err) => {
+    return toast.error(err, {
+      position: "bottom-right",
+    });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.post(
+        "http://localhost:8000/login",
+        {
+          ...values,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(data);
+      if (data) {
+        if (data.errors) {
+          const { email, password } = data.errors;
+          if (email) generateError(email);
+          else if (password) generateError(password);
+        } else {
+          navigate("/");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className="container">
