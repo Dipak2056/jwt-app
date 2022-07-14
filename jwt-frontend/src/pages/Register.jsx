@@ -10,9 +10,18 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("http://localhost:8000/register", {
-        ...values,
-      });
+      const { data } = await axios.post(
+        "http://localhost:8000/register",
+        {
+          ...values,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(data);
+      if (data) {
+      }
     } catch (error) {
       console.log(error);
     }
