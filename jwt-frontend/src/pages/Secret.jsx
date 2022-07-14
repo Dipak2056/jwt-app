@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 function Secret() {
   const navigate = useNavigate();
   const logOut = () => {
-    navigate("/");
+    navigate("/register");
   };
   return (
     <div className="private">

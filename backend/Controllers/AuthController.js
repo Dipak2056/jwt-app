@@ -12,6 +12,10 @@ const handleErrors = (err) => {
     email: "",
     password: "",
   };
+  if (err.message === "incorrect email")
+    errors.email = "That email is not registered.";
+  if (err.message === "incorrect password")
+    errors.password = "That password is incorrect.";
   if (err.code === 11000) {
     errors.email = "Email already registered";
     return errors;
@@ -33,11 +37,27 @@ export const register = async (req, res, next) => {
       HttpOnly: false,
       maxAge: maxAge * 1000,
     });
-    res.status(201).json({ user: user._id, created: true, token });
+    res.status(201).json({ user: user._id, created: true });
   } catch (error) {
     console.log(error);
     const errors = handleErrors(error);
     res.json({ errors, created: false });
   }
 };
-export const login = async (req, res, next) => {};
+export const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await UserModel.login(email, password);
+    const token = createToken(user._id);
+    res.cookie("jwt", token, {
+      withCredentials: true,
+      HttpOnly: false,
+      maxAge: maxAge * 1000,
+    });
+    res.status(200).json({ user: user._id, created: true });
+  } catch (error) {
+    console.log(error);
+    const errors = handleErrors(error);
+    res.json({ errors, created: false });
+  }
+};
