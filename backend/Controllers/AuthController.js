@@ -1,8 +1,9 @@
+import "dotenv/config";
 import UserModel from "../Models/UserModel.js";
 import jwt from "jsonwebtoken";
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
-  return jwt.sign({ id }, "Dipak Paudel secret key", {
+  return jwt.sign({ id }, `${process.env.SECRET_KEY}`, {
     expiresIn: maxAge,
   });
 };
